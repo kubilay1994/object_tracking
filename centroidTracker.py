@@ -2,11 +2,11 @@ import numpy as np
 
 
 class CentroidTracker:
-    def __init__(self):
+    def __init__(self, maxDissappeared=50):
         self.nextID = 0
         self.objects = {}
         self.dissappeared = {}
-        self.maxDissappeared = 30
+        self.maxDissappeared = maxDissappeared
 
     def register(self, centroid):
         self.objects[self.nextID] = centroid
