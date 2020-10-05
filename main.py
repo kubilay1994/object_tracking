@@ -44,7 +44,6 @@ out = cv2.VideoWriter(f'videos/{args.out}.avi', fourcc, 20.0,
 ct = CentroidTracker(maxDissappeared=15)
 backSub = algorithms[args.algo]()
 
-max
 
 
 for i in range(100):
