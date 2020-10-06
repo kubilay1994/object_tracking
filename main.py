@@ -36,14 +36,13 @@ minHeight = args.boxheight if args.boxwidth else 40
 minArea = minHeight * minWidth * 3 / 4 if not args.boxarea else 1200
 
 cap = cv2.VideoCapture(args.input) if args.input else cv2.VideoCapture(0)
-fourcc = cv2.VideoWriter_fourcc(*'XVID')
+fourcc = cv2.VideoWriter_fourcc(*'MJPG')
 
 out = cv2.VideoWriter(f'videos/{args.out}.avi', fourcc, 20.0,
                       (int(cap.get(3)), int(cap.get(4))))
 
 ct = CentroidTracker(maxDissappeared=15)
 backSub = algorithms[args.algo]()
-
 
 
 for i in range(100):

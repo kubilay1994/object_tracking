@@ -27,7 +27,7 @@ class CentroidTracker:
             return self.objects
 
         inputCentroids = np.asarray(
-            [(int((x + x + w) / 2), int((y + y + h) / 2)) for (x, y, w, h) in rects])
+            [((x + x + w) // 2, (y + y + h) // 2) for (x, y, w, h) in rects])
 
         if len(self.objects) == 0:
             for centroid in inputCentroids:
