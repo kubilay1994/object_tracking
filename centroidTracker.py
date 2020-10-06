@@ -13,6 +13,9 @@ class CentroidTracker:
         self.dissappeared[self.nextID] = 0
         self.nextID += 1
 
+    def get_count(self):
+        return self.nextID
+
     def remove(self, id):
         del self.objects[id]
         del self.dissappeared[id]

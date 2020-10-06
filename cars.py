@@ -1,11 +1,10 @@
 import cv2
 import numpy as np
 from centroidTracker import CentroidTracker
-from utils import register_tracker_to_roi
+from utils import register_tracker_to_roi, draw_tracker_objects_and_rects
 
 cap = cv2.VideoCapture("videos/2.mp4")
 
-frame_num = 0
 backSub = cv2.createBackgroundSubtractorMOG2()
 
 fourcc = cv2.VideoWriter_fourcc(*'MJPG')
@@ -20,10 +19,10 @@ minArea = 500
 minWidth = 12
 minHeight = 35
 
-l_id = r_id = -1
+l_id = r_id = 0
 
 
-for i in range(100):
+for i in range(50):
     ret, frame = cap.read()
     if ret == False:
         break
@@ -49,33 +48,16 @@ while True:
     robjects, rrects = register_tracker_to_roi(
         roi=mask[:, W//2:W], start=W//2, tracker=ct2, minArea=minArea, minHeight=minHeight, minWidth=minWidth)
 
-    for x, y, w, h in lrects:
-        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 0), 3)
+    l_id = ct1.get_count()
+    r_id = ct2.get_count()
 
-    for id, (cx, cy) in lobjects.items():
+    draw_tracker_objects_and_rects(
+        frame, lobjects, lrects,
+        title=f"Kuzeye dogru giden nesne sayisi : {l_id}", titleCoordinates=(0, 50), idColor=(0, 0, 255))
 
-        l_id = max(l_id, id)
-        text = f"L{id}"
-        cv2.putText(frame, text, (cx - 10, cy - 10),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-        cv2.circle(frame, (cx, cy), 4, (0, 0, 255), -1)
-
-        cv2.putText(frame, f"Kuzeye dogru giden nesne sayisi : {l_id + 1}", (0, 50),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5,  (0, 0, 0), 2)
-
-    for x, y, w, h in rrects:
-        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 0), 3)
-
-    for id, (cx, cy) in robjects.items():
-
-        r_id = max(r_id, id)
-        text = f"R{id}"
-        cv2.putText(frame, text, (cx - 10, cy - 10),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
-        cv2.circle(frame, (cx, cy), 4, (0, 255, 0), -1)
-
-    cv2.putText(frame, f"Guneye dogru giden nesne sayisi : {r_id + 1}", (W // 2 + 50, 50),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.5,  (0, 0, 0), 2)
+    draw_tracker_objects_and_rects(
+        frame, robjects, rrects,
+        title=f"Guneye dogru giden nesne sayisi : {r_id}", titleCoordinates=(W//2 + 50, 50), idColor=(0, 255, 0))
 
     cv2.imshow("normal", frame)
     cv2.imshow("mask", mask)
